@@ -1,4 +1,0 @@
-repository "nest quest v2/nest quest v2@2475802374708@cloud"
-  path "/"
-    br "/main"
-    co "/main"
