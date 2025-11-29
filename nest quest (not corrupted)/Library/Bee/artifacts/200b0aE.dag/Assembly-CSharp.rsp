@@ -437,11 +437,13 @@
 "Assets/Scripts/CurrentZone.cs"
 "Assets/Scripts/GameManager.cs"
 "Assets/Scripts/HazardFish.cs"
+"Assets/Scripts/JumpingFish.cs"
 "Assets/Scripts/MenuCamera.cs"
 "Assets/Scripts/MenuManager.cs"
 "Assets/Scripts/Nest.cs"
 "Assets/Scripts/PlayerFollower.cs"
 "Assets/Scripts/PlayerMovement.cs"
+"Assets/Scripts/ScorePopUp.cs"
 "Assets/Scripts/SlowZone.cs"
 "Assets/TutorialInfo/Scripts/Readme.cs"
 -langversion:9.0

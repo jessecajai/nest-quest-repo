@@ -7,6 +7,8 @@ public class BabySwan : MonoBehaviour
     private bool isFollowing = false;
     private Transform followTarget;
     private float spacing = 1.5f;
+    public int baseScore = 10;   // you can tweak this per-baby in the Inspector
+
 
     private void OnTriggerEnter(Collider other)
     {

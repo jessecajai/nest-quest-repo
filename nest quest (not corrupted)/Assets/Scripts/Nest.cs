@@ -1,10 +1,12 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Nest : MonoBehaviour
 {
+    [SerializeField] private float popupHeight = 2f;  // how high above the nest the popup appears
+
     private void OnTriggerEnter(Collider other)
     {
-        // Only react if the player enters
         if (!other.CompareTag("Player"))
             return;
 
@@ -12,23 +14,26 @@ public class Nest : MonoBehaviour
         if (follower == null || follower.babies.Count == 0)
             return;
 
-        int count = follower.babies.Count;
+        // Copy the list so we can modify the original safely
+        List<BabySwan> deliveredBabies = new List<BabySwan>(follower.babies);
 
-        // Remove the babies that are currently following
-        foreach (var baby in follower.babies)
+        // Remove visual babies from the world
+        foreach (var baby in deliveredBabies)
         {
             if (baby != null)
             {
-                Destroy(baby.gameObject);   // For now they just disappear at the nest
+                Destroy(baby.gameObject);
             }
         }
 
+        // Clear the player's train
         follower.babies.Clear();
 
-        // Tell the GameManager we delivered some babies
+        // Inform the GameManager (includes score + delivered count + popup)
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.DeliverBabies(count);
+            Vector3 popupPos = transform.position + Vector3.up * popupHeight;
+            GameManager.Instance.DeliverBabies(deliveredBabies, popupPos);
         }
     }
 }

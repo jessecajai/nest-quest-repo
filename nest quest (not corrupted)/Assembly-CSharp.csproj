@@ -48,8 +48,10 @@
     <Analyzer Include="/Applications/Unity/Hub/Editor/6000.2.14f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets/Scripts/ScorePopUp.cs" />
     <Compile Include="Assets/Scripts/MenuCamera.cs" />
     <Compile Include="Assets/Scripts/Nest.cs" />
+    <Compile Include="Assets/Scripts/JumpingFish.cs" />
     <Compile Include="Assets/Scripts/BabySwan.cs" />
     <Compile Include="Assets/Scripts/SlowZone.cs" />
     <Compile Include="Assets/TutorialInfo/Scripts/Readme.cs" />

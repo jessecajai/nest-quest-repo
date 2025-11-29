@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,6 +11,10 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI timerText;
     public TextMeshProUGUI messageText;
 
+    [Header("Score Popups")]
+    public ScorePopup scorePopupPrefab;
+
+
     [Header("Timer")]
     public float levelTime = 60f;   // set in Inspector if you want
     private float timeRemaining;
@@ -17,6 +22,8 @@ public class GameManager : MonoBehaviour
 
     private int babiesDelivered = 0;
     private int totalBabies = 0;
+
+    private int score = 0;
 
     private PlayerMovement playerMovement;   // to disable controls at end
 
@@ -77,17 +84,47 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void DeliverBabies(int amount)
+    public void DeliverBabies(List<BabySwan> deliveredBabies, Vector3 popupPosition)
     {
         if (gameOver) return;
+        if (deliveredBabies == null || deliveredBabies.Count == 0) return;
 
+        int amount = deliveredBabies.Count;
+
+        // 1) Update delivered count
         babiesDelivered += amount;
         if (babiesDelivered > totalBabies)
             babiesDelivered = totalBabies;
 
+        // 2) Sum base scores
+        int basePoints = 0;
+        foreach (var baby in deliveredBabies)
+        {
+            if (baby != null)
+                basePoints += baby.baseScore;
+        }
+
+        // 3) Group multiplier (risk–reward)
+        // 1 baby  = x1.0
+        // 2–3     = x1.5
+        // 4+      = x2.0
+        float groupMultiplier = 1f;
+        if (amount >= 2 && amount <= 3)
+            groupMultiplier = 1.5f;
+        else if (amount >= 4)
+            groupMultiplier = 2f;
+
+        int pointsEarned = Mathf.RoundToInt(basePoints * groupMultiplier);
+
+        // 4) Add to total score
+        score += pointsEarned;
+
         UpdateScoreUI();
 
-        // Optional: immediate win check on delivery
+        // 4b) Show score popup at the given world position
+        ShowScorePopup(pointsEarned, popupPosition);
+
+        // 5) Win check (same as before)
         if (!gameOver && totalBabies > 0 && babiesDelivered >= totalBabies)
         {
             WinGame();
@@ -98,7 +135,7 @@ public class GameManager : MonoBehaviour
     {
         if (scoreText != null)
         {
-            scoreText.text = $"Babies delivered: {babiesDelivered} / {totalBabies}";
+            scoreText.text = $"Babies delivered: {babiesDelivered} / {totalBabies}\nScore: {score}";
         }
     }
 
@@ -137,4 +174,18 @@ public class GameManager : MonoBehaviour
             playerMovement.enabled = enabled;
         }
     }
+    public void ShowScorePopup(int points, Vector3 worldPosition)
+    {
+        if (scorePopupPrefab == null || points <= 0)
+            return;
+
+        ScorePopup popup = Instantiate(
+            scorePopupPrefab,
+            worldPosition,
+            Quaternion.identity
+        );
+
+        popup.Setup(points, Color.yellow);
+    }
+
 }
